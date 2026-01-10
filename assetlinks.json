@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.hazistudioo.twa",
+        "sha256_cert_fingerprints": ["C5:BB:4D:F9:41:8A:DA:62:9A:92:95:BF:9C:EB:BB:DD:E0:A4:9A:12:6B:80:99:54:6A:D9:A7:F7:1F:DD:F0:2D"]
+      }
+    }]
