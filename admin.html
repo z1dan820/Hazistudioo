@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Hazi Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-2xl">
+        <h1 class="text-2xl font-bold mb-2 text-center">🎛️ Control Center</h1>
+        <p class="text-slate-400 text-center text-xs mb-6">Update URL Cloudflare tanpa buka GitHub</p>
+
+        <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-500 mb-1 uppercase">GitHub Token (Wajib)</label>
+            <input type="password" id="gh_token" placeholder="ghp_xxxxxxxxxxxx" 
+                class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white text-sm focus:border-green-500 outline-none transition">
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-xs font-bold text-green-500 mb-1 uppercase">URL Cloudflare Baru</label>
+            <input type="text" id="new_url" placeholder="https://xxxx-xxxx.trycloudflare.com" 
+                class="w-full bg-slate-900 border border-green-800 rounded px-3 py-3 text-white text-md font-mono focus:border-green-500 outline-none transition">
+        </div>
+
+        <button onclick="updateConfig()" id="btn-save" 
+            class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition shadow-lg flex justify-center items-center gap-2">
+            <span>💾 SIMPAN & UPDATE</span>
+        </button>
+
+        <div id="status" class="mt-4 text-center text-xs font-mono text-slate-400 min-h-[20px]"></div>
+        
+        <div class="mt-6 p-3 bg-blue-900/20 border border-blue-900/50 rounded text-[10px] text-blue-200">
+            ℹ️ <strong>Info:</strong> Setelah simpan, tunggu sekitar 30-60 detik agar website publik ter-update otomatis.
+        </div>
+    </div>
+
+    <script>
+        // ================= KONFIGURASI =================
+        const GITHUB_USERNAME = "z1dan820";  // GANTI DENGAN USERNAME GITHUB KAMU
+        const REPO_NAME = "Hazistudioo";  // GANTI DENGAN NAMA REPO KAMU
+        const FILE_PATH = "config.json";
+        // ===============================================
+
+        const tokenInput = document.getElementById('gh_token');
+        const urlInput = document.getElementById('new_url');
+        const statusDiv = document.getElementById('status');
+        const btnSave = document.getElementById('btn-save');
+
+        // Load Token dari LocalStorage (biar ga cape ngetik ulang)
+        tokenInput.value = localStorage.getItem('hazi_gh_token') || '';
+
+        async function updateConfig() {
+            const token = tokenInput.value.trim();
+            const newUrl = urlInput.value.trim();
+
+            if (!token || !newUrl) {
+                statusDiv.innerHTML = `<span class="text-red-500">❌ Token dan URL harus diisi!</span>`;
+                return;
+            }
+
+            // Simpan token di HP biar besok ga perlu isi lagi
+            localStorage.setItem('hazi_gh_token', token);
+
+            // UI Loading
+            btnSave.disabled = true;
+            btnSave.innerHTML = `⏳ Mengupdate GitHub...`;
+            statusDiv.innerHTML = `Mencari file config.json...`;
+
+            try {
+                // 1. GET SHA File Lama (Syarat update via API GitHub)
+                const getRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                    headers: { 
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (!getRes.ok) throw new Error("Gagal akses GitHub. Cek Token/Repo.");
+                const fileData = await getRes.json();
+                const currentSha = fileData.sha;
+
+                // 2. Siapkan Konten Baru (Base64 Encoded)
+                const newContentJson = JSON.stringify({ api_url: newUrl }, null, 2);
+                // Fungsi encode base64 yg aman untuk utf-8
+                const contentBase64 = btoa(newContentJson);
+
+                // 3. PUT (Update) File ke GitHub
+                const putRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: "Update URL from Admin Panel (Auto)",
+                        content: contentBase64,
+                        sha: currentSha
+                    })
+                });
+
+                if (!putRes.ok) throw new Error("Gagal update file.");
+
+                // Sukses
+                statusDiv.innerHTML = `<span class="text-green-400">✅ SUKSES! Web akan update dlm 1 menit.</span>`;
+                btnSave.innerHTML = `💾 SIMPAN & UPDATE`;
+                btnSave.disabled = false;
+                urlInput.value = ''; // Clear input
+
+            } catch (err) {
+                console.error(err);
+                statusDiv.innerHTML = `<span class="text-red-500">❌ Error: ${err.message}</span>`;
+                btnSave.innerHTML = `💾 SIMPAN & UPDATE`;
+                btnSave.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
