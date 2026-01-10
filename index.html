@@ -58,6 +58,59 @@
   </style>
 </head>
 <body class="bg-dark text-white font-sans antialiased selection:bg-white selection:text-black">
+  <div id="splash-screen" class="fixed inset-0 bg-black z-[9999] flex items-center justify-center transition-opacity duration-1000">
+    <div class="text-center">
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
+        
+        <h1 id="splash-text" class="text-white text-4xl md:text-6xl font-bold tracking-widest opacity-0" style="font-family: 'Orbitron', sans-serif;">
+            HAZI STUDIO
+        </h1>
+        <p class="text-gray-500 text-xs mt-2 tracking-[0.5em] animate-pulse">PREMIUM CUTS</p>
+    </div>
+</div>
+
+<style>
+    /* Animasi Text Masuk & Melebar */
+    @keyframes spaceXReveal {
+        0% {
+            opacity: 0;
+            transform: scale(0.8);
+            letter-spacing: 0px;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+            letter-spacing: 5px; /* Efek text melebar */
+        }
+    }
+
+    .animate-spacex {
+        animation: spaceXReveal 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+</style>
+
+<script>
+    // Logic Splash Screen
+    window.addEventListener('load', () => {
+        const splash = document.getElementById('splash-screen');
+        const text = document.getElementById('splash-text');
+        
+        // 1. Jalankan animasi text
+        text.classList.add('animate-spacex');
+
+        // 2. Hilangkan splash screen setelah 3 detik
+        setTimeout(() => {
+            splash.style.opacity = '0'; // Fade out
+            setTimeout(() => {
+                splash.style.display = 'none'; // Hapus dari layar
+            }, 1000); // Tunggu fade out selesai
+        }, 3000); // Durasi tampil splash screen
+    });
+</script>
+  
 
   <section class="relative h-screen flex items-center justify-center overflow-hidden bg-black">
     
