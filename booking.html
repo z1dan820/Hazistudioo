@@ -36,16 +36,7 @@
 </head>
 <body class="bg-dark text-white font-sans antialiased pb-24">
 
-    <div id="splash-screen" class="fixed inset-0 bg-black z-[9999] flex items-center justify-center transition-opacity duration-1000">
-        <img id="splash-icon" src="icon-192.png" class="w-32 h-32 object-contain transition-all duration-1000 ease-in-out">
-        <div id="splash-text-container" class="text-center absolute opacity-0 transition-all duration-1000 transform scale-90">
-            <h1 class="text-white text-4xl font-bold tracking-widest" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 20px rgba(255,255,255,0.5);">
-                HAZI STUDIO
-            </h1>
-            <p class="text-gray-500 text-xs mt-2 tracking-[0.5em] animate-pulse">BOOKING SYSTEM</p>
-        </div>
-    </div>
-
+    
     <nav class="fixed top-0 left-0 w-full bg-black/80 backdrop-blur-md border-b border-white/5 z-50 px-4 py-3 flex justify-between items-center">
         <div class="flex items-center gap-3">
             <a href="index.html" class="text-white/80 hover:text-white">
@@ -95,26 +86,9 @@
 
     </main>
       
-    <div id="app-navigation"></div>
-<script src="nav.js"></script>
+    
 
     <script>
-        // --- SPLASH SCREEN LOGIC ---
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('splash-icon').style.opacity = '0';
-                document.getElementById('splash-icon').style.transform = 'scale(0.5)';
-                setTimeout(() => {
-                    const txt = document.getElementById('splash-text-container');
-                    txt.classList.remove('opacity-0', 'scale-90');
-                    txt.classList.add('opacity-100', 'scale-100');
-                    setTimeout(() => {
-                        document.getElementById('splash-screen').style.opacity = '0';
-                        setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 1000);
-                    }, 2000);
-                }, 500);
-            }, 500);
-        });
 
         // --- BOOKING LOGIC ---
         const WA_NUMBER = "6288271187357";
@@ -252,5 +226,7 @@
 
         generateDateButtons();
     </script>
+    <div id="app-navigation"></div>
+<script src="nav.js"></script>
 </body>
 </html>
