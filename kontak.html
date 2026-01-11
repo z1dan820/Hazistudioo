@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kontak - HAZI STUDIO</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+      }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+                    colors: { dark: '#050505', card: '#121212' }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { display: none; }
+        body { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-dark text-white font-sans antialiased pb-24">
+
+    <div id="splash-screen" class="fixed inset-0 bg-black z-[9999] flex items-center justify-center transition-opacity duration-1000">
+        <img id="splash-icon" src="icon-192.png" class="w-32 h-32 object-contain transition-all duration-1000 ease-in-out">
+        <div id="splash-text-container" class="text-center absolute opacity-0 transition-all duration-1000 transform scale-90">
+            <h1 class="text-white text-4xl font-bold tracking-widest" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 20px rgba(255,255,255,0.5);">
+                HAZI STUDIO
+            </h1>
+            <p class="text-gray-500 text-xs mt-2 tracking-[0.5em] animate-pulse">CONTACT US</p>
+        </div>
+    </div>
+
+    <nav class="fixed top-0 left-0 w-full bg-black/80 backdrop-blur-md border-b border-white/5 z-50 px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="text-white/80 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </a>
+            <span class="font-serif font-bold text-lg tracking-wide">Contact Us</span>
+        </div>
+        <div class="w-8 h-8 rounded-full border border-white/20 overflow-hidden">
+             <img src="foto.png" onerror="this.src='https://ui-avatars.com/api/?name=H&background=000&color=fff'" class="w-full h-full object-cover">
+        </div>
+    </nav>
+
+    <main class="pt-20 px-4 space-y-6">
+
+        <div class="text-center py-6">
+            <div class="w-24 h-24 mx-auto rounded-full border border-white/20 p-2 mb-4 relative">
+                <div class="absolute inset-0 bg-white/5 rounded-full blur-xl"></div>
+                <img src="foto.png" onerror="this.src='https://ui-avatars.com/api/?name=H&background=000&color=fff'" class="w-full h-full object-cover rounded-full relative z-10">
+            </div>
+            <h2 class="text-2xl font-serif font-bold">Hazi Studio</h2>
+            <p class="text-gray-400 text-sm mt-1">We are here to help you.</p>
+        </div>
+
+        <div class="space-y-4">
+            
+            <a href="https://wa.me/6288271187357" target="_blank" class="group block bg-card border border-white/10 rounded-2xl p-5 flex items-center justify-between hover:bg-[#152018] hover:border-green-900/50 transition-all duration-300 active:scale-[0.98]">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 group-hover:bg-green-500 group-hover:text-black transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-sm">WhatsApp</h3>
+                        <p class="text-xs text-gray-500">Chat for fast response</p>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-gray-600 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+
+            <a href="https://instagram.com/hazistudioo" target="_blank" class="group block bg-card border border-white/10 rounded-2xl p-5 flex items-center justify-between hover:bg-[#1f151b] hover:border-pink-900/50 transition-all duration-300 active:scale-[0.98]">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-500 group-hover:bg-pink-500 group-hover:text-white transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-sm">Instagram</h3>
+                        <p class="text-xs text-gray-500">See our portfolio</p>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-gray-600 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+            
+        </div>
+
+        <div class="bg-card border border-white/10 rounded-2xl p-6 mt-6">
+            <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase tracking-wider border-b border-white/10 pb-2">Jam Operasional</h3>
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-gray-300">Senin - Jumat</span>
+                    <span class="font-bold text-white">10:00 - 21:00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-300">Sabtu - Minggu</span>
+                    <span class="font-bold text-white">10:00 - 22:00</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="fixed bottom-0 w-full bg-black border-t border-white/10 pb-safe pt-2 px-6 z-50">
+        <div class="flex justify-between items-center h-16 max-w-md mx-auto">
+            
+            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="text-[10px]">Home</span>
+            </a>
+
+            <a href="booking.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <span class="text-[10px]">Booking</span>
+            </a>
+
+            <a href="index.html#location-section" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="text-[10px]">Lokasi</span>
+            </a>
+
+            <a href="#" class="flex flex-col items-center gap-1 text-white">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-.4 4.25l-7.07 4.42c-.32.2-.74.2-1.06 0L4.4 8.25c-.25-.16-.4-.43-.4-.72 0-.67.73-1.11 1.3-.72l6.7 4.19 6.7-4.19c.57-.39 1.3.05 1.3.72 0 .29-.15.56-.4.72z"></path></svg>
+                <span class="text-[10px] font-bold">Kontak</span>
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        // Splash Screen Logic (Auto Close)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash-icon').style.opacity = '0';
+                document.getElementById('splash-icon').style.transform = 'scale(0.5)';
+                setTimeout(() => {
+                    const txt = document.getElementById('splash-text-container');
+                    txt.classList.remove('opacity-0', 'scale-90');
+                    txt.classList.add('opacity-100', 'scale-100');
+                    setTimeout(() => {
+                        document.getElementById('splash-screen').style.opacity = '0';
+                        setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 1000);
+                    }, 2000);
+                }, 500);
+            }, 500);
+        });
+    </script>
+</body>
+              </html>
+              
