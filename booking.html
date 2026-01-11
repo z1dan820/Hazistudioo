@@ -2,61 +2,150 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Slot - HAZI STUDIO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Booking - HAZI STUDIO</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+      }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
-                    colors: { dark: '#0a0a0a', card: '#111111' }
+                    colors: { dark: '#050505', card: '#121212' }
                 }
             }
         }
     </script>
+    <style>
+        /* Hilangkan Scrollbar */
+        ::-webkit-scrollbar { display: none; }
+        body { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
-<body class="bg-black text-white min-h-screen flex items-center justify-center p-4 font-sans">
+<body class="bg-dark text-white font-sans antialiased pb-24">
 
-    <div class="max-w-md w-full bg-card border border-white/10 rounded-3xl shadow-[0_0_40px_rgba(255,255,255,0.05)] overflow-hidden relative">
-        <div class="p-8 text-center relative z-10">
-            <div class="mx-auto w-24 h-24 rounded-full border border-white/30 p-1 mb-4">
-                <img src="fahrul.png" onerror="this.src='https://ui-avatars.com/api/?name=Hazi+Studio&background=fff&color=000'" alt="Barber" class="w-full h-full object-cover rounded-full">
+    <div id="splash-screen" class="fixed inset-0 bg-black z-[9999] flex items-center justify-center transition-opacity duration-1000">
+        <img id="splash-icon" src="icon-192.png" class="w-32 h-32 object-contain transition-all duration-1000 ease-in-out">
+        <div id="splash-text-container" class="text-center absolute opacity-0 transition-all duration-1000 transform scale-90">
+            <h1 class="text-white text-4xl font-bold tracking-widest" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 20px rgba(255,255,255,0.5);">
+                HAZI STUDIO
+            </h1>
+            <p class="text-gray-500 text-xs mt-2 tracking-[0.5em] animate-pulse">BOOKING SYSTEM</p>
+        </div>
+    </div>
+
+    <nav class="fixed top-0 left-0 w-full bg-black/80 backdrop-blur-md border-b border-white/5 z-50 px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="text-white/80 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </a>
+            <span class="font-serif font-bold text-lg tracking-wide">Select Slot</span>
+        </div>
+        <div class="w-8 h-8 rounded-full border border-white/20 overflow-hidden">
+             <img src="foto.png" onerror="this.src='https://ui-avatars.com/api/?name=H&background=000&color=fff'" class="w-full h-full object-cover">
+        </div>
+    </nav>
+
+    <main class="pt-20 px-4 space-y-6">
+
+        <div class="bg-card rounded-3xl p-6 border border-white/10 shadow-lg flex items-center gap-4">
+            <div class="w-16 h-16 rounded-full border-2 border-white/20 p-1">
+                <img src="foto.png" onerror="this.src='https://ui-avatars.com/api/?name=H&background=000&color=fff'" class="w-full h-full object-cover rounded-full">
             </div>
-            <h1 class="text-3xl font-serif font-bold tracking-wide">Fahrul Hamzidan Pulungan</h1>
+            <div>
+                <h2 class="font-serif font-bold text-xl text-white">Hazi Studio</h2>
+                <p class="text-gray-500 text-xs tracking-widest uppercase">Professional Barber</p>
+                <div class="flex gap-1 mt-1">
+                    <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded text-gray-300">⭐ 5.0</span>
+                    <span class="text-[10px] bg-green-900/30 text-green-400 px-2 py-0.5 rounded">Verified</span>
+                </div>
+            </div>
         </div>
 
-        <div class="p-6 bg-dark min-h-[400px]">
-            
-            <div class="mb-6">
-                <h3 class="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Pilih Tanggal</h3>
-                <div class="flex gap-2" id="date-buttons">
-                    </div>
+        <div>
+            <h3 class="text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider pl-1">Pilih Tanggal</h3>
+            <div class="flex gap-3" id="date-buttons">
+                </div>
+        </div>
+
+        <div>
+            <div class="flex justify-between items-end mb-3 px-1">
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Jadwal Tersedia</h3>
+                <span id="selected-date-label" class="text-[10px] font-sans text-green-400 bg-green-900/20 px-2 py-1 rounded border border-green-900/30">...</span>
             </div>
 
-            <h3 class="text-lg font-serif font-bold text-white mb-4 flex justify-between items-center">
-                Jam Tersedia
-                <span id="selected-date-label" class="text-xs font-sans font-normal text-green-400 bg-green-900/20 px-2 py-1 rounded">...</span>
-            </h3>
-            
             <div id="slot-container" class="space-y-3">
-                <div class="text-center text-gray-500 py-10 animate-pulse text-xs">Memuat jadwal...</div>
+                <div class="text-center text-gray-500 py-10 animate-pulse text-xs">Memuat jadwal server...</div>
             </div>
             
             <div id="error-msg" class="hidden mt-6 p-4 bg-red-900/20 border border-red-900/50 rounded-lg text-center text-xs text-red-300"></div>
         </div>
+
+    </main>
+
+    <div class="fixed bottom-0 w-full bg-black border-t border-white/10 pb-safe pt-2 px-6 z-50">
+        <div class="flex justify-between items-center h-16 max-w-md mx-auto">
+            
+            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="text-[10px]">Home</span>
+            </a>
+
+            <a href="#" class="flex flex-col items-center gap-1 text-white">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>
+                <span class="text-[10px] font-bold">Booking</span>
+            </a>
+
+            <a href="index.html#location-section" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="text-[10px]">Lokasi</span>
+            </a>
+
+            <a href="https://wa.me/6288271187357" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <span class="text-[10px]">Kontak</span>
+            </a>
+        </div>
     </div>
 
     <script>
+        // --- SPLASH SCREEN LOGIC ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash-icon').style.opacity = '0';
+                document.getElementById('splash-icon').style.transform = 'scale(0.5)';
+                setTimeout(() => {
+                    const txt = document.getElementById('splash-text-container');
+                    txt.classList.remove('opacity-0', 'scale-90');
+                    txt.classList.add('opacity-100', 'scale-100');
+                    setTimeout(() => {
+                        document.getElementById('splash-screen').style.opacity = '0';
+                        setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 1000);
+                    }, 2000);
+                }, 500);
+            }, 500);
+        });
+
+        // --- BOOKING LOGIC ---
         const WA_NUMBER = "6288271187357";
         const CONTAINER = document.getElementById('slot-container');
         const BTN_CONTAINER = document.getElementById('date-buttons');
         const DATE_LABEL = document.getElementById('selected-date-label');
         
-        let CURRENT_SELECTED_DATE = ""; // Format YYYY-MM-DD
+        let CURRENT_SELECTED_DATE = "";
 
-        // FUNGSI PENTING: Membuat Format YYYY-MM-DD Sesuai Jam Lokal HP (Bukan UTC)
         function getLocalDateString(dateObj) {
             const year = dateObj.getFullYear();
             const month = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -64,33 +153,25 @@
             return `${year}-${month}-${day}`;
         }
 
-        // Generate Tombol (Hari Ini, Besok, Lusa)
         function generateDateButtons() {
             BTN_CONTAINER.innerHTML = '';
-            const today = new Date(); // Ambil waktu HP saat ini
+            const today = new Date();
             
             for(let i=0; i<3; i++) {
                 const d = new Date(today);
                 d.setDate(today.getDate() + i);
-                
-                // GUNAKAN FUNGSI LOKAL (FIX BUG TANGGAL MUNDUR)
                 const dateStr = getLocalDateString(d); 
-                
-                // Label Tombol (Contoh: 11 Jan)
                 const dateLabel = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
                 const dayName = i === 0 ? "HARI INI" : (i === 1 ? "BESOK" : "LUSA");
 
                 const btn = document.createElement('button');
-                btn.className = `flex-1 py-3 rounded-xl border border-white/10 text-xs font-bold transition-all duration-300 date-btn`;
-                btn.innerHTML = `<span class="block text-[10px] text-gray-400 font-normal mb-1">${dayName}</span>${dateLabel}`;
+                // Updated Styling untuk Tombol Tanggal (App Style)
+                btn.className = `flex-1 py-3 rounded-2xl border border-white/10 text-xs font-bold transition-all duration-300 date-btn shadow-md`;
+                btn.innerHTML = `<span class="block text-[10px] text-gray-500 font-normal mb-1 tracking-wide">${dayName}</span><span class="text-sm">${dateLabel}</span>`;
                 
-                // Event Klik
                 btn.onclick = () => selectDate(dateStr, btn, d);
                 
-                // Auto-select hari ini
-                if (i === 0) {
-                    selectDate(dateStr, btn, d);
-                }
+                if (i === 0) selectDate(dateStr, btn, d);
                 BTN_CONTAINER.appendChild(btn);
             }
         }
@@ -98,25 +179,21 @@
         async function selectDate(dateStr, btnElement, dateObj) {
             CURRENT_SELECTED_DATE = dateStr;
             
-            // Update Tampilan Tombol
             document.querySelectorAll('.date-btn').forEach(b => {
-                b.classList.remove('bg-white', 'text-black', 'shadow-lg');
-                b.classList.add('bg-white/5', 'text-white');
+                b.classList.remove('bg-white', 'text-black', 'shadow-[0_0_15px_rgba(255,255,255,0.3)]', 'scale-[1.02]');
+                b.classList.add('bg-card', 'text-gray-400');
             });
             if(btnElement) {
-                btnElement.classList.remove('bg-white/5', 'text-white');
-                btnElement.classList.add('bg-white', 'text-black', 'shadow-lg');
+                btnElement.classList.remove('bg-card', 'text-gray-400');
+                btnElement.classList.add('bg-white', 'text-black', 'shadow-[0_0_15px_rgba(255,255,255,0.3)]', 'scale-[1.02]');
             }
 
-            // Update Label Hijau (Format Lengkap: Sabtu, 11 Januari 2026)
             DATE_LABEL.innerText = dateObj.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
             loadSlots(dateStr);
         }
 
         async function getApiUrl() {
             try {
-                // Tambah timestamp agar config selalu fresh
                 const configRes = await fetch('config.json?t=' + new Date().getTime());
                 const config = await configRes.json();
                 return config.api_url;
@@ -124,7 +201,7 @@
         }
 
         async function loadSlots(date) {
-            CONTAINER.innerHTML = '<div class="text-center text-gray-500 py-10 animate-pulse text-xs">Cek ketersediaan...</div>';
+            CONTAINER.innerHTML = '<div class="text-center text-gray-500 py-10 animate-pulse text-xs">Menghubungkan ke server...</div>';
             
             const url = await getApiUrl();
             if (!url) {
@@ -133,10 +210,8 @@
             }
 
             try {
-                // Panggil Backend dengan Timestamp agar tidak kena Cache Browser
                 const res = await fetch(`${url}/slots?date=${date}&t=${new Date().getTime()}`);
                 if (!res.ok) throw new Error("Server Error");
-                
                 const data = await res.json();
                 renderSlots(data.slots, date);
             } catch (err) {
@@ -150,8 +225,6 @@
             
             const now = new Date();
             const currentHour = now.getHours();
-            
-            // Cek apakah user sedang melihat "Hari Ini"?
             const todayStr = getLocalDateString(now);
             const isViewingToday = viewDate === todayStr;
 
@@ -159,30 +232,27 @@
                 let status = slots[time] || 'booked';
                 const slotHour = parseInt(time.split(':')[0]);
                 
-                // Logika Waktu Lewat (Hanya berlaku untuk Hari Ini)
                 if (isViewingToday) {
-                    // Jika jam sekarang > jam slot, maka expired
-                    if (currentHour > slotHour) {
-                        status = 'expired';
-                    } 
-                    // Jika jam sama, tapi menit sudah lewat > 0, expired
-                    else if (currentHour === slotHour && now.getMinutes() > 0) {
-                        status = 'expired';
-                    }
+                    if (currentHour > slotHour) status = 'expired';
+                    else if (currentHour === slotHour && now.getMinutes() > 0) status = 'expired';
                 }
 
                 const isAvailable = status === 'available';
                 
+                // Updated Styling Button Booking (Lebih Premium)
                 let btnHtml = isAvailable 
-                    ? `<button onclick="openWA('${time}', '${viewDate}')" class="bg-white text-black font-bold text-xs px-4 py-2 rounded-lg hover:bg-gray-200 transition shadow-[0_0_10px_rgba(255,255,255,0.3)]">BOOKING</button>`
-                    : `<span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">${status === 'expired' ? 'SELESAI' : 'BOOKED'}</span>`;
+                    ? `<button onclick="openWA('${time}', '${viewDate}')" class="bg-white text-black font-bold text-[10px] md:text-xs px-5 py-2.5 rounded-xl hover:bg-gray-200 transition shadow-[0_0_10px_rgba(255,255,255,0.2)] active:scale-95">BOOKING</button>`
+                    : `<span class="text-[10px] font-bold text-gray-600 uppercase tracking-wider bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">${status === 'expired' ? 'SELESAI' : 'FULL'}</span>`;
 
                 const el = document.createElement('div');
-                el.className = `w-full p-4 rounded-2xl flex justify-between items-center mb-3 transition-all duration-300 ${isAvailable ? 'bg-white/5 border border-white/20' : 'bg-white/[0.02] opacity-50'}`;
+                el.className = `w-full p-4 rounded-2xl flex justify-between items-center mb-3 transition-all duration-300 border ${isAvailable ? 'bg-card border-white/10 hover:border-white/30' : 'bg-black/40 border-white/5 opacity-60'}`;
                 el.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="h-2 w-2 rounded-full ${isAvailable ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-gray-600'}"></div>
-                        <span class="font-serif font-bold text-xl text-white">${time}</span>
+                    <div class="flex items-center gap-4">
+                        <div class="h-2 w-2 rounded-full ${isAvailable ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-gray-700'}"></div>
+                        <div>
+                            <span class="font-serif font-bold text-xl text-white block leading-none">${time}</span>
+                            <span class="text-[10px] text-gray-500 uppercase tracking-wider">${isAvailable ? 'Available' : 'Unavailable'}</span>
+                        </div>
                     </div>
                     <div>${btnHtml}</div>
                 `;
@@ -191,7 +261,6 @@
         }
 
         function openWA(time, date) {
-            // Format pesan WA
             const text = `Halo Admin, saya mau booking *HAZI STUDIO*\n\n📅 Tanggal: ${date}\n⏰ Jam: ${time}\n\nMohon konfirmasinya.`;
             window.location.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
         }
@@ -203,7 +272,6 @@
             CONTAINER.innerHTML = '';
         }
 
-        // Start App
         generateDateButtons();
     </script>
 </body>
