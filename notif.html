@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Notif - HAZI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body{background:#0a0a0a;color:#fff;font-family:sans-serif}
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="p-6 max-w-lg mx-auto min-h-screen flex flex-col">
+
+    <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
+        <h1 class="text-xl font-bold">📢 Admin Panel</h1>
+        <a href="index.html" class="text-xs text-gray-500 hover:text-white">Back to Home</a>
+    </div>
+
+    <div class="bg-[#121212] p-5 rounded-2xl mb-8 border border-gray-800 shadow-lg">
+        <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Buat Notifikasi Baru</h2>
+        
+        <div class="space-y-3">
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Tipe Info</label>
+                <select id="type" class="w-full bg-black border border-gray-700 p-3 rounded-lg text-sm text-white focus:outline-none focus:border-white">
+                    <option value="info">ℹ️ Info Biasa (Biru)</option>
+                    <option value="promo">🔥 Promo / Diskon (Hijau)</option>
+                    <option value="alert">⚠️ Peringatan / Libur (Merah)</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Judul</label>
+                <input id="title" type="text" placeholder="Contoh: Jumat Berkah" class="w-full bg-black border border-gray-700 p-3 rounded-lg text-sm text-white focus:outline-none focus:border-white">
+            </div>
+
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Isi Pesan</label>
+                <textarea id="msg" placeholder="Isi pesan lengkap..." class="w-full bg-black border border-gray-700 p-3 rounded-lg text-sm h-24 text-white focus:outline-none focus:border-white"></textarea>
+            </div>
+
+            <button onclick="addNotif()" class="w-full bg-white text-black font-bold py-3 rounded-xl hover:bg-gray-200 transition transform active:scale-95">
+                POSTING SEKARANG
+            </button>
+        </div>
+    </div>
+
+    <div class="flex-1">
+        <h3 class="text-xs font-bold text-gray-500 uppercase mb-3 px-1">Sedang Tayang</h3>
+        <div id="list" class="space-y-3 pb-10">
+            <p class="text-center text-gray-600 text-sm py-10">Memuat data...</p>
+        </div>
+    </div>
+
+    <script>
+        // === KONFIGURASI ===
+        const MY_TOKEN = "pulungan"; // Ganti password admin disini
+        
+        let currentData = [];
+        let API_URL = "";
+
+        async function init() {
+            // 1. Cek Token
+            const token = prompt("🔒 Masukkan Token Admin:");
+            if(token !== MY_TOKEN) {
+                alert("Token Salah!");
+                window.location.href = "index.html";
+                return;
+            }
+
+            // 2. Ambil URL Server dari config.json
+            try {
+                const configRes = await fetch('config.json?t=' + Date.now());
+                const config = await configRes.json();
+                API_URL = config.api_url;
+                
+                // 3. Load Data Notif
+                loadData();
+            } catch(e) {
+                alert("Gagal load config.json");
+            }
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch(`${API_URL}/notif?t=${Date.now()}`);
+                currentData = await res.json();
+                render();
+            } catch(e) { 
+                document.getElementById('list').innerHTML = '<p class="text-red-500 text-center text-sm">Gagal koneksi ke STB</p>'; 
+            }
+        }
+
+        function render() {
+            const container = document.getElementById('list');
+            container.innerHTML = '';
+            
+            if(currentData.length === 0) {
+                container.innerHTML = '<div class="text-center py-10 bg-[#121212] rounded-xl border border-dashed border-gray-800"><p class="text-gray-500 text-sm">Belum ada notifikasi aktif.</p></div>';
+                return;
+            }
+
+            currentData.forEach((item, index) => {
+                // Styling beda tiap tipe
+                let badgeColor = 'bg-blue-900/30 text-blue-400';
+                if(item.type === 'promo') badgeColor = 'bg-green-900/30 text-green-400';
+                if(item.type === 'alert') badgeColor = 'bg-red-900/30 text-red-400';
+                
+                container.innerHTML += `
+                    <div class="bg-[#121212] border border-gray-800 p-4 rounded-xl flex justify-between items-start group hover:border-gray-600 transition">
+                        <div class="w-full pr-4">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold bg-gray-800 px-2 py-0.5 rounded text-gray-400">${item.date}</span>
+                                <span class="text-[10px] font-bold ${badgeColor} px-2 py-0.5 rounded uppercase">${item.type}</span>
+                            </div>
+                            <h4 class="font-bold text-white text-sm mb-1">${item.title}</h4>
+                            <p class="text-xs text-gray-400 leading-relaxed">${item.message}</p>
+                        </div>
+                        <button onclick="hapus(${index})" class="bg-red-500/10 text-red-500 p-2 rounded-lg hover:bg-red-500 hover:text-white transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        async function addNotif() {
+            const title = document.getElementById('title').value;
+            const msg = document.getElementById('msg').value;
+            const type = document.getElementById('type').value;
+
+            if(!title || !msg) return alert("Harap isi Judul dan Pesan!");
+
+            const newItem = {
+                title: title,
+                message: msg,
+                type: type,
+                date: new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'short'})
+            };
+
+            // Tambah ke paling atas (Unshift)
+            currentData.unshift(newItem);
+            
+            // Simpan ke Server
+            await saveToServer();
+            
+            // Reset Form
+            document.getElementById('title').value = '';
+            document.getElementById('msg').value = '';
+            render();
+        }
+
+        async function hapus(index) {
+            if(!confirm("Yakin mau hapus info ini?")) return;
+            currentData.splice(index, 1);
+            await saveToServer();
+            render();
+        }
+
+        async function saveToServer() {
+            try {
+                const btn = document.querySelector('button[onclick="addNotif()"]');
+                const oldText = btn.innerText;
+                btn.innerText = "Menyimpan...";
+                btn.disabled = true;
+
+                await fetch(`${API_URL}/notif`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(currentData)
+                });
+
+                btn.innerText = oldText;
+                btn.disabled = false;
+            } catch(e) {
+                alert("Gagal menyimpan ke STB. Cek koneksi!");
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
