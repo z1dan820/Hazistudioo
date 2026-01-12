@@ -4,40 +4,361 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Offline - HAZI STUDIO</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
-                    colors: { dark: '#050505', card: '#121212' }
-                }
-            }
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        body {
+            background-color: #050505;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            touch-action: none; 
+            overflow: hidden;
+            user-select: none;
         }
-    </script>
-</head>
-<body class="bg-dark text-white font-sans h-screen flex flex-col items-center justify-center p-6 text-center">
+        
+        .font-serif { font-family: 'Playfair Display', serif; }
 
-    <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6 animate-pulse">
-        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18M12 18h.01M5.8 5.8a14.1 14.1 0 0112.4 0M8.5 8.5a10 10 0 017 7M2 12h.01"></path>
-        </svg>
+        /* Game Container */
+        #game-wrapper {
+            position: relative;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000;
+        }
+        canvas { display: block; width: 100%; height: 100%; }
+
+        /* Animasi Tombol Start */
+        .pulse-btn { animation: pulse-glow 2s infinite; }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        /* Tombol Kontrol */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+        }
+        .glass-btn:active { background: rgba(255, 255, 255, 0.3); }
+    </style>
+</head>
+<body class="h-screen flex flex-col items-center justify-center p-6">
+
+    <div class="text-center mb-4 z-10">
+        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-2 animate-pulse">
+            <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18M12 18h.01M5.8 5.8a14.1 14.1 0 0112.4 0M8.5 8.5a10 10 0 017 7M2 12h.01"></path></svg>
+        </div>
+        <h1 class="font-serif text-xl font-bold tracking-wide text-white">Yah😥koneksi kamu terputus</h1>
+        <p class="text-[10px] text-gray-500 tracking-widest uppercase mt-1">Hazi Studio Offline Game</p>
     </div>
 
-    <h1 class="text-2xl font-serif font-bold mb-2">Anda Sedang Offline</h1>
-    <p class="text-gray-400 text-sm mb-8 leading-relaxed">
-        Sepertinya koneksi internet Anda terputus.<br>
-        Fitur booking membutuhkan koneksi internet.
-    </p>
+    <div class="w-full max-w-sm relative">
+        
+        <div class="flex justify-between text-gray-400 text-[10px] mb-2 px-2 font-bold tracking-wider uppercase">
+             <span>Score: <span id="scoreEl" class="text-white">0</span></span>
+             <span>Best: <span id="highScoreEl" class="text-white">0</span></span>
+        </div>
 
-    <button onclick="window.location.reload()" class="w-full max-w-xs bg-white text-black font-bold py-3 rounded-xl shadow-lg hover:bg-gray-200 transition active:scale-95 flex items-center justify-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-        COBA LAGI
+        <div id="game-wrapper" class="h-[400px] w-full relative">
+            <canvas id="gameCanvas"></canvas>
+            
+            <div id="startScreen" class="absolute inset-0 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center z-30 cursor-pointer">
+                <button id="startBtn" class="pulse-btn bg-white text-black font-bold text-sm py-4 px-10 rounded-full shadow-2xl tracking-widest hover:scale-105 transition transform">
+                    START MISSION
+                </button>
+            </div>
+
+            <div id="gameOverScreen" class="hidden absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-30">
+                <h2 class="font-serif text-3xl text-white mb-1">Game Over</h2>
+                <p class="text-gray-400 text-xs mb-6">Mission Failed.</p>
+                <button id="restartBtn" class="bg-white text-black text-xs font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.4)] active:scale-95 transition">
+                    TRY AGAIN
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-6 h-16">
+            <button class="glass-btn" id="leftBtn">◀</button>
+            <button class="glass-btn" id="rightBtn">▶</button>
+        </div>
+
+    </div>
+
+    <button onclick="window.location.reload()" class="mt-8 text-[10px] text-gray-500 border-b border-gray-800 pb-1">
+        Refresh Connection
     </button>
-    
-    <p class="mt-8 text-[10px] text-gray-600">HAZI STUDIO APP v1.0</p>
 
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('game-wrapper');
+
+        // Resize Canvas
+        function resize() {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // --- GAME VARIABLES ---
+        let player = { x: 0, y: 0, w: 24, h: 24 };
+        let bullets = [];
+        let enemies = [];
+        let stars = [];
+        let particles = [];
+        let score = 0;
+        let highScore = localStorage.getItem('haziGameHigh') || 0;
+        let frameCount = 0;
+        let isGameOver = false;
+        let isPlaying = false; // Status penting!
+        let keys = { left: false, right: false };
+
+        document.getElementById('highScoreEl').innerText = highScore;
+
+        // --- INPUT HANDLING ---
+        const handleInput = (btn, key) => {
+            btn.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; });
+            btn.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
+            btn.addEventListener('mousedown', (e) => { e.preventDefault(); keys[key] = true; });
+            btn.addEventListener('mouseup', (e) => { e.preventDefault(); keys[key] = false; });
+            btn.addEventListener('mouseleave', () => keys[key] = false);
+        };
+        handleInput(document.getElementById('leftBtn'), 'left');
+        handleInput(document.getElementById('rightBtn'), 'right');
+        
+        // Keyboard
+        window.addEventListener('keydown', e => { if(e.key==='ArrowLeft') keys.left=true; if(e.key==='ArrowRight') keys.right=true; });
+        window.addEventListener('keyup', e => { if(e.key==='ArrowLeft') keys.left=false; if(e.key==='ArrowRight') keys.right=false; });
+
+
+        // --- TOMBOL LOGIC (DIPERBAIKI) ---
+        
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+
+        // Fungsi Utama untuk Memulai/Restart Game
+        function launchGame() {
+            // 1. Reset Variable
+            score = 0;
+            frameCount = 0;
+            bullets = [];
+            enemies = [];
+            particles = [];
+            
+            // 2. Set Posisi Player Awal
+            player.x = canvas.width / 2 - player.w / 2;
+            player.y = canvas.height - 60;
+
+            // 3. Reset UI
+            document.getElementById('scoreEl').innerText = "0";
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+
+            // 4. SET STATUS JADI TRUE (Penting!)
+            isGameOver = false;
+            isPlaying = true;
+            
+            // 5. Init Stars
+            initStars();
+        }
+
+        // Event Listeners (Pakai 'click' dan 'touchstart' biar aman)
+        startBtn.addEventListener('click', launchGame);
+        startBtn.addEventListener('touchstart', (e) => { e.preventDefault(); launchGame(); });
+        
+        // RESTART BUTTON LOGIC FIX
+        restartBtn.addEventListener('click', launchGame);
+        restartBtn.addEventListener('touchstart', (e) => { e.preventDefault(); launchGame(); });
+
+
+        // --- GAME LOGIC ---
+        function initStars() {
+            stars = [];
+            for(let i=0; i<40; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    speed: Math.random() * 0.8 + 0.2
+                });
+            }
+        }
+
+        function spawnEnemy() {
+            let rate = Math.max(30, 90 - score);
+            if (frameCount % rate === 0) {
+                const size = Math.random() * 15 + 20;
+                enemies.push({
+                    x: Math.random() * (canvas.width - size),
+                    y: -size, w: size, h: size,
+                    speed: Math.random() * 2 + 2
+                });
+            }
+        }
+
+        function createExplosion(x, y) {
+            for(let i=0; i<8; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 5,
+                    vy: (Math.random() - 0.5) * 5,
+                    life: 1.0
+                });
+            }
+        }
+
+        function update() {
+            // Background Animation (Selalu jalan biar gak kaku)
+            stars.forEach(s => {
+                s.y += s.speed;
+                if(s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
+            });
+
+            // JIKA GAME STOP, JANGAN UPDATE POSISI LAIN
+            if (!isPlaying || isGameOver) return; 
+
+            // Player Move
+            if (keys.left && player.x > 0) player.x -= 6;
+            if (keys.right && player.x < canvas.width - player.w) player.x += 6;
+
+            // Auto Shoot
+            if (frameCount % 12 === 0) {
+                bullets.push({ x: player.x + player.w/2, y: player.y, w: 2, h: 10, speed: 10 });
+            }
+
+            // Update Bullets
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                bullets[i].y -= bullets[i].speed;
+                if (bullets[i].y < 0) bullets.splice(i, 1);
+            }
+
+            // Enemies
+            spawnEnemy();
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                let e = enemies[i];
+                e.y += e.speed;
+
+                // Bullet Hit
+                for (let j = bullets.length - 1; j >= 0; j--) {
+                    let b = bullets[j];
+                    if (b.x > e.x && b.x < e.x + e.w && b.y > e.y && b.y < e.y + e.h) {
+                        createExplosion(e.x + e.w/2, e.y + e.h/2);
+                        enemies.splice(i, 1);
+                        bullets.splice(j, 1);
+                        score++;
+                        document.getElementById('scoreEl').innerText = score;
+                        break;
+                    }
+                }
+
+                // Crash Player
+                if (
+                    player.x < e.x + e.w && player.x + player.w > e.x &&
+                    player.y < e.y + e.h && player.y + player.h > e.y
+                ) {
+                    endGame();
+                }
+
+                if (e.y > canvas.height) enemies.splice(i, 1);
+            }
+
+            // Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].x += particles[i].vx;
+                particles[i].y += particles[i].vy;
+                particles[i].life -= 0.08;
+                if(particles[i].life <= 0) particles.splice(i, 1);
+            }
+
+            frameCount++;
+        }
+
+        function draw() {
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Stars
+            ctx.fillStyle = 'rgba(255,255,255,0.4)';
+            stars.forEach(s => {
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
+            });
+
+            if(!isPlaying && !isGameOver) return; // Menu State
+
+            // Player
+            ctx.shadowBlur = 15; ctx.shadowColor = "rgba(255,255,255,0.8)";
+            ctx.fillStyle = "#fff";
+            ctx.beginPath();
+            ctx.moveTo(player.x + player.w/2, player.y);
+            ctx.lineTo(player.x + player.w, player.y + player.h);
+            ctx.lineTo(player.x, player.y + player.h);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Bullets
+            ctx.shadowBlur = 8; ctx.shadowColor = "#00ffff";
+            ctx.fillStyle = "#fff";
+            bullets.forEach(b => ctx.fillRect(b.x-1, b.y, b.w, b.h));
+            ctx.shadowBlur = 0;
+
+            // Enemies
+            enemies.forEach(e => {
+                let grad = ctx.createLinearGradient(e.x, e.y, e.x, e.y + e.h);
+                grad.addColorStop(0, "#ff3333"); grad.addColorStop(1, "#660000");
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.moveTo(e.x + e.w/2, e.y);
+                ctx.lineTo(e.x + e.w, e.y + e.h/2);
+                ctx.lineTo(e.x + e.w/2, e.y + e.h);
+                ctx.lineTo(e.x, e.y + e.h/2);
+                ctx.fill();
+            });
+
+            // Particles
+            particles.forEach(p => {
+                ctx.fillStyle = `rgba(255,255,255,${p.life})`;
+                ctx.fillRect(p.x, p.y, 2, 2);
+            });
+        }
+
+        function endGame() {
+            isGameOver = true;
+            isPlaying = false;
+            
+            if(score > highScore) {
+                highScore = score;
+                localStorage.setItem('haziGameHigh', highScore);
+                document.getElementById('highScoreEl').innerText = highScore;
+            }
+            
+            // Munculkan Layar Game Over
+            document.getElementById('gameOverScreen').classList.remove('hidden');
+        }
+
+        // GAME LOOP UTAMA
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        // Init
+        initStars();
+        loop();
+
+    </script>
 </body>
 </html>
-
